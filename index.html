@@ -2,59 +2,83 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>нажимайте на мишку</title>
+    <title>Click the coin</title>
     <style>
-        body { text-align: center; font-family: Arial, sans-serif; }
-        #coin { cursor: pointer; }
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: black;
+        }
+        #coin {
+            cursor: pointer;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #2b2b2b;
+                color: white;
+            }
+            button {
+                background-color: #444;
+                color: white;
+                border: 1px solid #666;
+            }
+            button:hover {
+                background-color: #555;
+            }
+        }
     </style>
     <script>
         let score = 0;
-        const coin = document.getElementById('coin');
-        const scoreElement = document.getElementById('score');
+        const userId = 12345; // Замените на фактический идентификатор пользователя
+        document.addEventListener("DOMContentLoaded", () => {
+            const coin = document.getElementById('coin');
+            const scoreElement = document.getElementById('score');
 
-        function incrementScore() {
-            score++;
-            scoreElement.textContent = score;
-            // Send score to server
-            fetch(`/increment_score?user_id=${userId}`)
-                .then(response => response.json())
-                .then(data => console.log(data));
-        }
+            coin.addEventListener('click', incrementScore);
 
-        function showUpgrades() {
-            // Fetch and display upgrades from server
-            fetch(`/get_upgrades?user_id=${userId}`)
-                .then(response => response.json())
-                .then(data => {
-                    // Display upgrades in the game interface
-                    alert('Upgrades: ' + JSON.stringify(data));
-                });
-        }
+            function incrementScore() {
+                score++;
+                scoreElement.textContent = score;
+                // Send score to server
+                fetch(`/increment_score?user_id=${userId}`)
+                    .then(response => response.json())
+                    .then(data => console.log(data));
+            }
 
-        function showRating() {
-            // Fetch and display rating from server
-            fetch(`/get_rating`)
-                .then(response => response.json())
-                .then(data => {
-                    // Display rating in the game interface
-                    alert('Rating: ' + JSON.stringify(data));
-                });
-        }
+            document.getElementById('upgrades').addEventListener('click', showUpgrades);
+            document.getElementById('rating').addEventListener('click', showRating);
+            document.getElementById('invite').addEventListener('click', inviteFriend);
 
-        function inviteFriend() {
-            // Implement invite friend functionality
-            alert('Invite functionality not implemented yet.');
-        }
+            function showUpgrades() {
+                fetch(`/get_upgrades?user_id=${userId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        alert('Upgrades: ' + JSON.stringify(data));
+                    });
+            }
 
-        coin.addEventListener('click', incrementScore);
+            function showRating() {
+                fetch(`/get_rating`)
+                    .then(response => response.json())
+                    .then(data => {
+                        alert('Rating: ' + JSON.stringify(data));
+                    });
+            }
+
+            function inviteFriend() {
+                alert('Invite functionality not implemented yet.');
+            }
+        });
     </script>
 </head>
 <body>
-    <h1>Click the Hryvnia</h1>
+    <h1>Click the coin</h1>
     <img id="coin" src="coin.png" alt="Coin" width="100" height="100">
-    <p>Score: <span id="score">0</span></p>
-    <button onclick="showUpgrades()">Улучшения</button>
-    <button onclick="showRating()">Рейтинг</button>
-    <button onclick="inviteFriend()">Пригласить</button>
+    <p>Оцінка: <span id="score">0</span></p>
+    <button id="upgrades">Улучшения</button>
+    <button id="rating">Рейтинг</button>
+    <button id="invite">Пригласить</button>
 </body>
 </html>
